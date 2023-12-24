@@ -9,13 +9,13 @@ from datetime import datetime as dt
 import sqlite3
 import user # import our general action function for creating, deleting, logging out
 
-# print('Welcome to your favourite Stock taking app.\nCreate,Delete or Retrieve')
 
-
-# using multpile constructor (class method)
 class CreateProduct:
     """
-    This class contain differenent function for the purpose of populatin our DB.
+    This class contain different function for the purpose of populating our DB.
+    : create product input - user is requested to input details to be saved in the DB
+    : product to db - upload product from input to DB
+    : product to console - this calls the function (product to db ) and also print upladed product to console
 
     """
 
@@ -98,14 +98,15 @@ class CreateProduct:
 
 
 def retrieve_record(table_name, column, record):
-    """ Retrieving record from Database it can be any table
+    """ Retrieving record from Database, it can be any table
     The search is case-sensitive.
     param: table name = name of a table in our DB
             column = A column in our table
-            record = A record will be returned if this matchs one of the stored data in any of the column in the table.
+            record = A record will be returned if this match one of the stored data in any of the column in the table.
     """
+
     try:
-        with sqlite3.connect("stocker_db.sqlite3") as retrieving:
+        with sqlite3.Connection("stocker_db.sqlite3") as retrieving:
             cursor = retrieving.cursor()
 
             COMMAND = f'SELECT * FROM {table_name} WHERE {column} =?'
@@ -127,27 +128,23 @@ def retrieve_record(table_name, column, record):
 
 class DeleteDataFromDb:
     """
-    This class contain the function for deleting data from either the whole tables in the DB or a specified table,
+    This class contain the function for deleting data from either the whole tables in the DB or a specified table
     """
-
-    # def __init__(self, table_name):
-    #     self.table = table_name
-       
-
     def __delete_action(self):
         ''' 
-        Implementation to know you really want to delete all files in the DB table. 
+        Implementation to know you really want to delete all files in the DB table.
+        making sure you really wants to delete all data
         if any inconsistency found in your input you will be logged out.
         The double underscore(__) is to make sure this class isn't accesible from the outside 
         '''
-        # making sure you realy wants to delete all data
+
         print('\n-----------------------------------------------------\nif any inconsistency found in your input you will be logged out.\n-----------------------------------------------------\n')
         assurance = input('You are trying to delete the whole data🙄. Enter Yes or No: ').capitalize()
-        # assured = 0
+
 
         if assurance == "Yes":
-            assured = 0
-            while assured < 3 and assurance =='Yes': # only No and assured gt 3 keeps end this loop
+            assured = 0 # iterator
+            while assured < 3 and assurance =='Yes': # only No and when assured get to 3 keeps end this loop.
                 print(f'\nAre you sure you really wants to delete all table.I am asking {assured+1} out of 3.\n', )
                 assurance = input('You are trying to delete the whole data🙄. Enter Yes or No: ').capitalize()
                 # iterator it increase assured value
