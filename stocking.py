@@ -15,34 +15,36 @@ class CreateProduct:
     This class contain different function for the purpose of populating our DB.
     : create product input - user is requested to input details to be saved in the DB
     : product to db - upload product from input to DB
-    : product to console - this calls the function (product to db ) and also print upladed product to console
+    : product to console - this calls the function (product to db ) and also print uploaded product to console
 
     """
 
     def __init__(self, product):  # using positional arguments
         self.product = product
         self.item = product[0]  # for items
-        self.category = product[1]  # for catergory
+        self.category = product[1]  # for category
         self.unit = product[2]  # for unit
         self.price = product[3]  # for price
         self.status = product[4]  # for status
         self.date_added = product[5]  # to add a
 
     @classmethod
-    def create_product_input(cls):
+    def create_product_through_input(cls):
         '''
         A class method that takes input from user, this input is then used by the constructor.
         we must instantiate this method together with the class as it the method that take input needed by the constructor
         '''
-        
-        print('-----------------------------------------------------\nYou are about to start creating proudct watch out for error😁.\n-----------------------------------------------------\n')
+
+        print('-----------------------------------------------------\nYou are about to start creating product watch out for error😁.\n-----------------------------------------------------\n')
         item = input('required \nWhat the product name: ').strip()
         while len(item) == 0:
             print('Enter a valid item:')
             item = input('required \nWhat the product name: ').strip()
+
         category = input(
-            'What the category?: \n if you do want to add you can do it later.')
-        unit = int(input('required  \nHow many unit is avalaible: '))
+            'What the category?: \n if you do not want to add it you can do later.')
+
+        unit = int(input('required  \nHow many unit is available: '))
         price = float(input('required \nHow much per unit(15): '))
 
         # add date which product was created to DB
@@ -56,8 +58,9 @@ class CreateProduct:
             print('Enter either 1(Available) or 0(Out of stock)')
             status = int(input(
             'required \nIs the product available yet, Available/Out of stock : pick(1/0) '))  # available/out of stock
-        real_status = "Available" if status == 1 else "Out of stock" 
-        
+
+        real_status = "Available" if status == 1 else "Out of stock" #similar to using choice field
+
         product = item.capitalize(), category.capitalize(
         ), unit, price, real_status, date_added # tuple packing
 
@@ -66,19 +69,18 @@ class CreateProduct:
     def product_to_db(self):
         """
         This function insert our list of product into the Db
-
         """
-        
+
         with sqlite3.connect('stocker_db.sqlite3') as inserted:
             cursor = inserted.cursor()
 
-            # insertion into atable we manually created name Product
+            # insertion into a table we manually created name Product
             COMMAND = 'INSERT INTO Product(Item,Category,Unit,Price,Status,Created) VALUES (?,?,?,?,?,?)'
             cursor.execute(COMMAND, (self.item, self.category,
                            self.unit, self.price, self.status, self.date_added))
 
             inserted.commit()
-            
+
             print('-----------------------------------------------------\nInserted into DB.\n-----------------------------------------------------\n')
 
     def product_to_console(self):
@@ -88,12 +90,12 @@ class CreateProduct:
         print('calling product to db function')
         self.product_to_db()
         print('success calling made to db function')
-        # the end if all process is succceful
+        # the end if all process is successful
         # user.action() # after each creation make a new decision.
-        print(f'-----------------------------------------------------\nEverything woring fine . \nThe input here = {self.product}\n-----------------------------------------------------\n')
+        print(f'-----------------------------------------------------\nEverything working fine . \nThe input here = {self.product}\n-----------------------------------------------------\n')
         user.action() # after each creation make a new decision.
 
-# console_and_DB = CreateProduct.create_product_input()
+# console_and_DB = CreateProduct.create_product_through_input()
 # console_and_DB.product_to_console()
 
 
@@ -135,7 +137,7 @@ class DeleteDataFromDb:
         Implementation to know you really want to delete all files in the DB table.
         making sure you really wants to delete all data
         if any inconsistency found in your input you will be logged out.
-        The double underscore(__) is to make sure this class isn't accesible from the outside 
+        The double underscore(__) is to make sure this class isn't accessible from the outside 
         '''
 
         print('\n-----------------------------------------------------\nif any inconsistency found in your input you will be logged out.\n-----------------------------------------------------\n')
@@ -145,23 +147,24 @@ class DeleteDataFromDb:
         if assurance == "Yes":
             assured = 0 # iterator
             while assured < 3 and assurance =='Yes': # only No and when assured get to 3 keeps end this loop.
-                print(f'\nAre you sure you really wants to delete all table.I am asking {assured+1} out of 3.\n', )
+                print(f'\nAre you sure you really wants to delete all table. I am asking {assured+1} out of 3.\n', )
                 assurance = input('You are trying to delete the whole data🙄. Enter Yes or No: ').capitalize()
                 # iterator it increase assured value
                 if assurance == 'Yes':
                     assured += 1
                 else:
                     print('\nYou are guilty of indecision.You have been logged out.☹\n')
-            return("Valid")
+            return "Valid"
         else:
             print('\nYou are guilty of indecision.You are going to be logged out.🤐\n')
-            return('Invalid')
+            return 'Invalid'
 
     def delete_all_tables(self):
-        ''' cAVEATS: All data from our Db can be deleted calling this function alone. 
+        ''' 
+            CAVEATS: All data from our Db can be deleted calling this function alone. 
         '''
 
-        print('-----------------------------------------------------\nDELETEING ALL DATA FROM DB TABLES.\n-----------------------------------------------------\n')
+        print('-----------------------------------------------------\nDELETING ALL DATA FROM DB TABLES.\n-----------------------------------------------------\n')
         try:
             if self.__delete_action() == 'Valid':
                 with sqlite3.Connection('stocker_db.sqlite3') as to_del:
@@ -186,7 +189,7 @@ class DeleteDataFromDb:
 
                     # Now deleting
                     to_del.commit()
-                    print('Deleted succesfull.\n Database table data Empty')
+                    print('Deleted successful.\n Database tables data Empty')
             else:
                 print('You have been logged out')
 
@@ -194,10 +197,11 @@ class DeleteDataFromDb:
             print(f'There is an error {e}')
 
     def delete_specific_table(self,table_name):
-        ''' Warning: A particular table will be deleted calling this function.
+        ''' 
+        Caveats: A particular table will be deleted calling this function.
         The table to be deleted will be passed into the class object 
         '''
-        print(f'-----------------------------------------------------\nDELETEING ALL DATA FROM {table_name}DB TABLES.\n-----------------------------------------------------\n')
+        print(f'-----------------------------------------------------\nDELETING ALL DATA FROM {table_name} DB TABLES.\n-----------------------------------------------------\n')
 
         try:
             with sqlite3.Connection('stocker_db.sqlite3') as to_del:
@@ -212,14 +216,14 @@ class DeleteDataFromDb:
                 COMMAND = "SELECT name FROM sqlite_master WHERE type='table';"
                 cursor.execute(COMMAND)
                 tables = cursor.fetchall()
-                # print(list(tables)) # return name of all table in the Db
+                print(list(tables)) # return name of all table in the Db
 
-                for table in tables:
-                    if table_name in table:
-                        print(table_name)
-                        cursor.execute(f"DELETE FROM {table_name};")
-                        print(f"The table {table_name} is deleted")
-                        break
+                exist = any( True if table_name.capitalize() == table[0] else False for table in tables)
+
+                if exist:
+                    print(table_name)
+                    cursor.execute(f"DELETE FROM {table_name};")
+                    print(f"The table {table_name} is deleted")
                 else:
                     print(f'Table {table_name} not found')
 
@@ -231,6 +235,6 @@ class DeleteDataFromDb:
             print(f'There was an error {e}')
 
 # delete = DeleteDataFromDb()
-# delete.delete_specific_table()
+# delete.delete_specific_table('product')
 
-# delete._DeleteDataFromDb__delete_action()  # through name mangling it can be accessed 
+# delete._DeleteDataFromDb__delete_action()  # through name mangling it can be accessed

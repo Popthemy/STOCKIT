@@ -1,5 +1,5 @@
 '''
-This module contians function to;
+This module contain function to;
 createuser = createuser()
 Authenticate user = userauth()
 '''
@@ -10,9 +10,8 @@ import hashlib  # hasing password
 from stocking import CreateProduct, DeleteDataFromDb
 
 
-
 def createuser():
-    ''' 
+    '''
     Create new user. Users are been prompted to input username and
     if the username exist in the DB it has to be changed.
     The password is also hashed for security purpose.
@@ -21,12 +20,12 @@ def createuser():
     print('-----------------------------------------------------\nWelcome 😎 Enter your valid details and sign in\n-----------------------------------------------------\n')
 
     username = input('Enter username (length between 6 - 50): ')
-    while not (6 <= len(username.strip()) <= 50):
+    while not 6 <= len(username.strip()) <= 50:
         print('Enter a valid Username (length between 6 - 50)')
         username = input('Enter username of length between 6 - 50 : ')
 
     password = input('Enter password (length between 6 - 50): ')
-    while not (6 <= len(password.strip()) <= 50):
+    while not 6 <= len(password.strip()) <= 50:
         print('Enter a valid Password (length between 6 - 50)')
         password = input('Enter password of length between 6 - 50 : ')
 
@@ -56,7 +55,7 @@ def createuser():
             COMMAND = 'INSERT INTO Users(Username, Password, Created) VALUES (?,?,?)'
             cursor.execute(COMMAND, (username, hashed_password, created))
             user.commit()
-            print('-----------------------------------------------------\nAccount Suuccefully\n-----------------------------------------------------\n')
+            print('-----------------------------------------------------\nAccount Successfully\n-----------------------------------------------------\n')
             action()  # for decision making to log out or create product
 
 
@@ -78,7 +77,7 @@ def user_auth():
     password = input('Enter your password : ')
     while not (6 <= len(password.strip()) <= 50):
         print('Enter your valid Password (length between 6 - 50)')
-        password = input('Enter yourpassword of length between 6 - 50 : ')
+        password = input('Enter your password of length between 6 - 50 : ')
 
     # connecting to db
     with sqlite3.connect('stocker_db.sqlite3') as auth:
@@ -93,7 +92,7 @@ def user_auth():
         if verified:
             # calling a function that to specify if you log out or add product
             print('Checked✔✔✔ \nLogin Successful.')
-            print('-----------------------------------------------------\nDo you want to perform an action (Create, Delete or Log out).\n-----------------------------------------------------\n')    
+            print('-----------------------------------------------------\nDo you want to perform an action (Create, Delete or Log out).\n-----------------------------------------------------\n')
             action()
 
         else:
@@ -112,24 +111,26 @@ def user_auth():
 # user_auth()
 
 
+ACTIONS = ['Create', 'Log out', 'Delete']
+
+
 def action():
     ''' This function allows us to decide either to create a product or delete data from a table or log out performing no action
     '''
-    ACTIONS = ['Create', 'Log out', 'Delete']
-    main_action = input('Press either create , delete  or Log out to perform the function. required*: ').capitalize()
+    main_action = input(
+        'Press either create , delete  or Log out to perform the function. required*: ').capitalize()
     print(main_action)
 
-
-    while main_action not in ACTIONS :
-        main_action = input('Press either Create, Delete or Log out. required* : ').capitalize()
-        
+    while main_action not in ACTIONS:
+        main_action = input(
+            'Press either Create, Delete or Log out. required* : ').capitalize()
 
     if main_action == 'Create':
         # if add then we call the create product class that allows us to input the data for the product,
-        # take the data updates it to Db and then print the inputed data to us.
+        # take the data updates it to Db and then print the input data to us.
 
-        console_and_DB = CreateProduct.create_product_input()
-        console_and_DB.product_to_console()
+        console_and_db = CreateProduct.create_product_input()
+        console_and_db.product_to_console()
 
     elif main_action == 'Delete':
         print('-----------------------------------------------------\nChoose delete options.\n-----------------------------------------------------\n')
@@ -145,4 +146,3 @@ def action():
 
     elif main_action == 'Log out':
         print('-----------------------------------------------------\nLog out Successful. Bye for now👋.\n-----------------------------------------------------\n')
-    
